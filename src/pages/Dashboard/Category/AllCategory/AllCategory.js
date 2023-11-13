@@ -11,6 +11,7 @@ import UpdateCategory from "./UpdateCategory";
 // import { RxCross2 } from 'react-icons/';
 
 import "./CategoryModal.css";
+import { AdminContext } from "../../../../contexts/AdminContext";
 
 const style = {
   position: "absolute",
@@ -29,7 +30,12 @@ const AllCategory = () => {
   console.log(categoryPerPage, 'categoryPerPage');
   const [open, setOpen] = React.useState(false);
   const [modal, setModal] = useState(false);
-  const [name, setCategoryName] = useState("");
+  const [income, setIncome] = useState();
+  const [expenses, setexpenses] = useState();
+  const [debts, setdebts] = useState();
+  const [assets, setassets] = useState();
+  const [month, setmonth] = useState("");
+  const [year, setyear] = useState("");
   const [categories, setCategories] = useState([]);
   const [categoryUpdate, setCategoryUpdate] = useState({
     show: false,
@@ -46,6 +52,7 @@ const AllCategory = () => {
   const [lastPage, setLastPage] = useState(0);
   const [sliceCategories, setSliceCategories] = useState([]);
   // console.log(sliceProducts)
+  const { admin } = React.useContext(AdminContext);
 
   useEffect(() => {
     const lastPage = Math.ceil(categories?.length / show);
@@ -57,30 +64,30 @@ const AllCategory = () => {
 
 
 
-  useEffect(() => {
-    if (categoryPerPage) {
-      const page = parseInt(categoryPerPage);
-      const getSlicingCategory = categories.slice(
-        (page - 1) * show,
-        page * show
-      );
-      setSliceCategories([...getSlicingCategory]);
-      setPage(parseInt(page));
-    } else {
-      const getSlicingProduct = categories.slice(0, show);
-      setSliceCategories([...getSlicingProduct]);
-    }
-  }, [categories, show, categoryPerPage]);
+  // useEffect(() => {
+  //   if (categoryPerPage) {
+  //     const page = parseInt(categoryPerPage);
+  //     const getSlicingCategory = categories.slice(
+  //       (page - 1) * show,
+  //       page * show
+  //     );
+  //     setSliceCategories([...getSlicingCategory]);
+  //     setPage(parseInt(page));
+  //   } else {
+  //     const getSlicingProduct = categories.slice(0, show);
+  //     setSliceCategories([...getSlicingProduct]);
+  //   }
+  // }, [categories, show, categoryPerPage]);
 
-  const pageHandle = (jump) => {
-    navigate(`/admin/all-category/${jump}`);
-    setPage(parseInt(jump));
-  };
+  // const pageHandle = (jump) => {
+  //   navigate(`/admin/all-category/${jump}`);
+  //   setPage(parseInt(jump));
+  // };
 
   //****************************** Pagination End ******************************/
 
   const getCategory = () => {
-    fetch(`https://backend.dslcommerce.com/api/category/`)
+    fetch(`http://localhost:8001/api/v1/financial-data/${admin?.email}`)
       .then((res) => res.json())
       .then((data) => {
         setCategories(data);
@@ -97,16 +104,21 @@ const AllCategory = () => {
     // console.log(data)
   }, []);
 
+  const headers = {
+    'Authorization': `${localStorage.getItem('setToken')}`
+  };
+
   //post new categories
   const handleSubmit = async (e) => {
     e.preventDefault();
     await axios
-      .post("https://backend.dslcommerce.com/api/category/", { name })
+      .post("http://localhost:8001/api/v1/financial-data/", { income, expenses, debts, assets, month, year  }, {headers})
       .then((res) => {
-        if (res.status === 201) {
+        if (res.status === 200) {
+          console.log('submitted dataaaaaa : ' , res.data)
           swal({
-            // title: "Success",
-            text: res.data.message,
+            title: "Your Financial Score : ",
+            text: `${res.data.score}`,
             icon: "success",
             button: "OK!",
             className: "modal_class_success",
@@ -116,7 +128,6 @@ const AllCategory = () => {
         }
       })
       .catch((error) => {
-        // alert(error.response.data.message);
         swal({
           title: "Attention",
           text: error.response.data.message,
@@ -124,15 +135,12 @@ const AllCategory = () => {
           button: "OK!",
           className: "modal_class_success",
         });
-        // console.log(error);
-        // setIsLoadingAdmin(false);
       });
   };
 
   //edit categories
   const handleEdit = async (e, id, name) => {
     e.preventDefault();
-    console.log("handleEdit");
     console.log(id);
     console.log(name);
 
@@ -209,7 +217,7 @@ const AllCategory = () => {
   const handleClose = () => setOpen(false);
   return (
     <>
-      <h5 className="text-white text-start text-uppercase pt-1">CATEGORIES</h5>
+      <h5 className="text-white text-start text-uppercase pt-1">FINANCIAL HEALTH</h5>
 
       <div>
         <Modal
@@ -222,7 +230,7 @@ const AllCategory = () => {
 
             <div className="text-start d-flex justify-content-between">
               <h4 className="text-white text-uppercase text-start py-2 ">
-                Add Category
+              Check Health
               </h4>
               <span className="p-1 crossButton"
                 onClick={handleClose}
@@ -235,18 +243,96 @@ const AllCategory = () => {
             <form id="contactForm" className="form" onSubmit={handleSubmit}>
               <div className="">
                 <div className="form-group">
+                <lable className="mt-2">Income</lable>
                   <input
-                    type="text"
-                    name="categoryName"
-                    id="categoryName"
-                    className="form-control"
+                    type="number"
+                    name="income"
+                    id="income"
+                    className="form-control ps-2"
                     style={{ paddingLeft: "0" }}
                     required
-                    data-error="Please enter category Name"
-                    placeholder=" Category Name"
-                    value={name}
-                    onChange={(e) => setCategoryName(e.target.value)}
+                    min="0"
+                    data-error="Please enter your monthly income"
+                    placeholder="00"
+                    value={income}
+                    onChange={(e) => setIncome(e.target.value)}
                   />
+                  
+                <lable className="mt-2">Expenses</lable>
+                  <input
+                    type="number"
+                    name="expenses"
+                    id="expenses"
+                    min="0"
+                    className="form-control ps-2"
+                    style={{ paddingLeft: "0" }}
+                    required
+                    data-error="Please enter your monthly expenses"
+                    placeholder="00"
+                    value={expenses}
+                    onChange={(e) => setexpenses(e.target.value)}
+                  />
+
+
+                <lable className="mt-2">Debts</lable>
+                  <input
+                    type="number"
+                    name="debts"
+                    id="debts"
+                    min="0"
+                    className="form-control ps-2"
+                    style={{ paddingLeft: "0" }}
+                    required
+                    data-error="Please enter your debts"
+                    placeholder="00"
+                    value={debts}
+                    onChange={(e) => setdebts(e.target.value)}
+                  />
+
+
+                 <lable className="mt-2">Assets</lable>
+                  <input
+                    type="number"
+                    name="assets"
+                    min="0"
+                    id="assets"
+                    className="form-control ps-2"
+                    style={{ paddingLeft: "0" }}
+                    required
+                    data-error="Please enter your assets"
+                    placeholder="00"
+                    value={assets}
+                    onChange={(e) => setassets(e.target.value)}
+                  />
+
+                 <lable className="mt-2">Year</lable>
+                  <input
+                    type="text"
+                    name="year"
+                    id="year"
+                    className="form-control ps-2"
+                    style={{ paddingLeft: "0" }}
+                    required
+                    placeholder="2023"
+                    value={year}
+                    onChange={(e) => setyear(e.target.value)}
+                  />
+
+                 <lable className="mt-2">Month</lable>
+                  <input
+                    type="text"
+                    name="month"
+                    id="month"
+                    className="form-control ps-2"
+                    style={{ paddingLeft: "0" }}
+                    required
+                    placeholder="January"
+                    value={month}
+                    onChange={(e) => setmonth(e.target.value)}
+                  />
+
+
+
                   <div className="help-block with-errors"></div>
                 </div>
               </div>
@@ -256,43 +342,15 @@ const AllCategory = () => {
               <div className="mt-3 d-flex justify-content-center gap-1 text-center mt-2 modalFooter">
                 <button
                   type="button"
-                  className="adminBtnAdd11"
+                  className="adminBtnAdd11 btn btn-danger"
                   onClick={handleClose}
                 >
                   CANCEL
                 </button>
-                <button type="submit" className="adminBtnAdd ">
+                <button type="submit" className="adminBtnAdd btn btn-success">
                   ADD
                 </button>
               </div>
-
-              {/* <div className="">
-                <div className="col-6 text-center">
-                  <div>
-                    <button
-                      type="submit"
-                      className="default-btn cBtn p-1 my-2 p-md-2 m-md-0 border text-uppercase"
-                      style={{ cursor: "pointer" }}
-                    >
-                      SAVE
-                      <span></span>
-                    </button>
-                  </div>
-                </div>
-                <div className="col-6 text-center">
-                  <div>
-                    <button
-                      type="button"
-                      className="default-btn cBtn p-1 my-2 p-md-2 m-md-0 border"
-                      style={{ cursor: "pointer" }}
-                      onClick={handleClose}
-                    >
-                      CANCEL
-                      <span></span>
-                    </button>
-                  </div>
-                </div>
-              </div> */}
             </form>
           </Box>
         </Modal>
@@ -306,21 +364,24 @@ const AllCategory = () => {
             style={{ background: '#6958BE' }}
             onClick={handleOpen}
           >
-            ADD CATEGORY
+            Check Financial Health
           </Button>
         </div>
         <Table style={{ color: "white" }}>
           <thead>
             <tr>
-              <th>CATEGORIES</th>
+              <th>Email</th>
+              <th>Month</th>
+              <th>Score</th>
               <th className="text-end">ACTIONS</th>
             </tr>
           </thead>
           <tbody>
-            {sliceCategories &&
-              sliceCategories.map((category) => (
+            {categories?.map((category) => (
                 <tr key={category._id}>
-                  <td>{category.name}</td>
+                  <td>{category.email}</td>
+                  <td>{category.month}</td>
+                  <td>{category.score}</td>
 
                   <td>
                     <div className="text-end">
@@ -328,15 +389,6 @@ const AllCategory = () => {
                         <button
                           type="button"
                           className="editBtn"
-                          onClick={() =>
-                            setCategoryUpdate({
-                              ...categoryUpdate,
-                              value: category,
-                              show: true,
-                            })
-
-                          }
-
                         >
                           <i className="fas fa-edit"></i>
                         </button>
@@ -344,7 +396,6 @@ const AllCategory = () => {
                       <Tooltip title="Delete category." placement="top">
                         <button
                           className="deleteBtn"
-
                           onClick={() => {
                             deleteWarning(category);
                           }}
@@ -360,7 +411,7 @@ const AllCategory = () => {
         </Table>
 
         {/* Pagination  */}
-        <div className="">
+        {/* <div className="">
           {sliceCategories?.length ? (
             <Pagination
               lastPage={lastPage}
@@ -370,7 +421,7 @@ const AllCategory = () => {
           ) : (
             <></>
           )}
-        </div>
+        </div> */}
       </div>
 
       {/* <UpdateCategory

@@ -6,19 +6,23 @@ export const AdminContext = createContext();
 
 export default function AdminProvider({ children }) {
     const [admin, setAdmin] = useState(null);
-    const [token, setToken] = useState()
+    const [token, setTokenss] = useState()
+    const [activationToken, setActivationToken] = useState()
     const [isAuthenticating, setIsAuthenticating] = useState(false);
+
+
+
     // console.log(localStorage)
     useEffect(() => {
-        axios.get("https://backend.dslcommerce.com/api/admin/admin", {
+        axios.get("http://localhost:8001/api/v1/me", {
             headers: {
-                'authorization': `Bearer ${localStorage.getItem('adminDslCommerce')}`
+                'Authorization': `${localStorage.getItem('setToken')}`
             }
         })
             .then(res => {
-                if (res.status === 200) {
-                    setAdmin(res.data.admin);
-
+                if (res.status === 201) {
+                    setAdmin(res.data?.user);
+                    console.log('userrrrrrrrrrrrrrrrrrrrrrrr : ', res.data?.user)
                 }
             })
             .catch(err => {
@@ -29,21 +33,27 @@ export default function AdminProvider({ children }) {
 
 
 
-    const login = async (email, password) => {
-        await axios.post('https://backend.dslcommerce.com/api/admin/login', {
+    const SignUp = async (name, email, password) => {
+        await axios.post('http://localhost:8001/api/v1/registration', {
+            name,
             email,
-            password
+            password,
+            
         })
             .then(res => {
-                if (res.status === 200) {
-                    setToken(res.data.token);
+                if (res.status === 201) {
+                    setActivationToken(res.data.activationToken);
                     setIsAuthenticating(true);
-                    localStorage.setItem('verify-tokens', res.data.token);
-                    setToken(res.data.token);
                 }
+                swal({
+                    title: "Success",
+                    text: `${res.data?.message}`,
+                    icon: "success",
+                    button: "OK!",
+                    className: "modal_class_success",
+                });
             })
             .catch(error => {
-                // alert(error.response.data.message);
                 swal({
                     title: "Attention",
                     text: `${error.response?.data?.message}`,
@@ -55,37 +65,14 @@ export default function AdminProvider({ children }) {
 
     }
 
-    const verifyOtp = async (otp) => {
-        await axios.post('https://backend.dslcommerce.com/api/admin/verify-otp/', {
-            otp
-        }, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
-            .then(res => {
-                if (res.status === 200) {
-                    setIsAuthenticating(false);
-                    setAdmin(res.data.admin);
-                    localStorage.setItem('adminDslCommerce', res.data.token);
-                    localStorage.removeItem('verify-tokens');
-                }
-            })
-            .catch(error => {
-                // alert(error.response.data.message);
-                swal({
-                    title: "Attention",
-                    text: `${error.response?.data?.message}`,
-                    icon: "warning",
-                    button: "OK!",
-                    className: "modal_class_success",
-                });
-            });
-    }
+
+
+
+
 
     const logout = () => {
         setAdmin(null);
-        localStorage.removeItem("adminDslCommerce");
+        localStorage.removeItem("setToken");
     }
 
     return (
@@ -94,10 +81,12 @@ export default function AdminProvider({ children }) {
             isAuthenticating,
             setAdmin,
             logout,
-            login,
-            verifyOtp,
+            SignUp,
             token,
+            setTokenss,
             setIsAuthenticating,
+            activationToken,
+            setActivationToken
         }}>{children}</AdminContext.Provider>
     )
 }

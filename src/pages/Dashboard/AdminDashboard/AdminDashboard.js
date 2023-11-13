@@ -43,22 +43,22 @@ const AdminDashboard = () => {
   //     });
   // }, []);
 
-  // useEffect(() => {
-  //   axios.get("https://backend.dslcommerce.com/api/category/").then((res) => {
-  //     setCategories(res.data);
-  //   });
-  // }, []);
+  useEffect(() => {
+    axios.get("http://localhost:8001/api/v1/financial-data").then((res) => {
+      setCategories(res.data);
+    });
+  }, []);
 
   // useEffect(() => {
   //   axios.get("https://backend.dslcommerce.com/api/order/").then((res) => {
   //     setAllOrder(res.data);
   //   });
   // }, []);
-  // useEffect(() => {
-  //   axios.get("https://backend.dslcommerce.com/api/users/all/").then((res) => {
-  //     setCustomers(res.data);
-  //   });
-  // }, []);
+  useEffect(() => {
+    axios.get("http://localhost:8001/api/v1/get/all").then((res) => {
+      setCustomers(res.data.data);
+    });
+  }, []);
   // useEffect(() => {
   //   axios
   //     .get("https://backend.dslcommerce.com/api/user-panel/verified/")
@@ -164,7 +164,7 @@ const AdminDashboard = () => {
             <Card className="cardDash " style={{ borderRadius: "20px" }}>
               <Card.Body className="d-flex align-items-center justify-content-between">
                 <Card.Text className="dashboardTxt">
-                  <p>Customers</p>
+                  <p>Users</p>
                   <h2 className="text-start">{customers.length}</h2>
                 </Card.Text>
                 <div className="iconDas">
@@ -182,7 +182,7 @@ const AdminDashboard = () => {
             <Card className="cardDash " style={{ borderRadius: "20px" }}>
               <Card.Body className="d-flex align-items-center justify-content-between">
                 <Card.Text className="dashboardTxt">
-                  <p>Categories</p>
+                  <p>Data Recorded</p>
                   <h2 className="text-start">{categories.length}</h2>
                 </Card.Text>
                 <div className="iconDas">

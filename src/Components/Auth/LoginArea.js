@@ -3,46 +3,71 @@ import { Link, useNavigate } from "react-router-dom";
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
 import InputGroup from "react-bootstrap/InputGroup";
 import Form from "react-bootstrap/Form";
-
-// import AuthContext from "../../contexts/auth-context";
 import { AdminContext } from "../../contexts/AdminContext";
 import axios from "axios";
 import swal from "sweetalert";
+
 
 function LoginArea({ customClass = "" }) {
   const [visiblePassword, setVisiblePassword] = useState(false);
   const [email, setEmail] = useState("");
   const password = useRef();
   const [alertMsg, setAlertMsg] = useState(null);
-  // const context = useContext(AuthContext);
-  const { admin, token, isAuthenticating, login } = useContext(AdminContext);
+  const { setAdmin, setIsAuthenticating, setTokenss } = useContext(AdminContext);
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (isAuthenticating) {
-      navigate(`/admin/otp/${token}`, { replace: true });
-    }
-    if (admin?._id) {
-      navigate("/admin", { replace: true });
-    }
-  }, [admin, navigate, isAuthenticating, token]);
 
+  
   const handleLogin = (e) => {
     e.preventDefault();
-
     const password = e.target.password.value;
-    // console.log(email);
-    // console.log(password);
-    login(email, password);
+    axios
+      .post(
+        `http://localhost:8001/api/v1/login`,
+        {
+          email,
+          password,
+        },
+      )
+      .then((res) => {
+        if (res.status === 200) {
+          navigate("/admin/dashboard");
+          console.log('dattttaaaaaaaaaaa' , res.data)
+          localStorage.setItem('setToken', res.data.accessToken);
+          setTokenss(res.data?.accessToken)
+          setAdmin(res.data?.user);
+          setIsAuthenticating(true);
+        }
+      })
+      .catch((err) => {
+        swal({
+          text: err.response.data.message,
+          icon: "warning",
+          button: "OK!",
+          className: "modal_class_success",
+        });
+      });
   };
+
+
+
+
+
+
+  // const handleLogin = (e) => {
+  //   e.preventDefault();
+  //   const password = e.target.password.value;
+  //   console.log(email, password)
+  //   login(email, password);
+  // };
+
 
   return (
     <div
-      className={"login-form " + customClass}
-      style={{ backgroundColor: "#d1d1d1" }}
+      className={"login-form "}
     >
-      {alertMsg &&
+      {/* {alertMsg &&
         (Array.isArray(alertMsg) ? (
           <div className="alert alert-danger" role="alert">
             <ul className="errors" style={{ marginBottom: 0 }}>
@@ -57,22 +82,9 @@ function LoginArea({ customClass = "" }) {
           <div className={`alert alert-success`} role="alert">
             {alertMsg}
           </div>
-        ))}
-      <div className="mx-auto text-center">
-        <img
-          style={{
-            width: "80px",
-            marginTop: "-20px",
-          }}
-          src="https://testnet.grighund.net/static/media/logo192.ea779dfe5e580c22a76f.png"
-          className="handleLogoLogin"
-          alt="logo"
-        />
+        ))} */}
 
-        <span className="text-center mt-4 loginTag "></span>
-
-        {/* <h2 className=" ">Login</h2> */}
-      </div>
+        <h2 className=" ">Sign-In</h2>
 
       <form onSubmit={handleLogin}>
         <InputGroup className="mb-3 mt-5">
@@ -111,34 +123,14 @@ function LoginArea({ customClass = "" }) {
           </InputGroup.Text>
         </InputGroup>
 
-        <div className="row align-items-center">
-          <div className="col-lg-6 col-md-6 col-sm-6 lost-your-password text-left">
-            <a href="login/forgetPassword" className="lost-your-password">
-              Forgot your password?
-            </a>
-          </div>
-          <div className="col-lg-6 col-md-6 col-sm-6">
-            {/* <div className="form-check">
-              <input
-                type="checkbox"
-                className="form-check-input"
-                id="checkme"
-              />
-              <label className="form-check-label" htmlFor="checkme">
-                Remember me
-              </label>
-            </div> */}
-          </div>
-        </div>
-
         <button type="submit">Login</button>
       </form>
 
-      {/* <div className="important-text">
+      <div className="important-text">
         <p>
-          Don't have an account? <Link to="/admin/register">Register now!</Link>
+          Don't have an account? <Link to="/admin/signup">Signup now!</Link>
         </p>
-      </div> */}
+      </div>
     </div>
   );
 }

@@ -58,14 +58,7 @@ const ForgetPassword = () => {
         <div className="container mx-auto">
           <div className=" forCard  w-50 p-5 rounded mx-auto">
             <div className="mx-auto text-center">
-              <img
-                style={{
-                  width: "80px",
-                  marginTop: "-20px",
-                }}
-                src="https://testnet.grighund.net/static/media/logo192.ea779dfe5e580c22a76f.png"
-                alt="logo"
-              />
+              
               <p className="py-1" style={{ fontSize: "34px" }}>
                 Forget Password
               </p>

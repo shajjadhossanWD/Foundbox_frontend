@@ -1,51 +1,39 @@
-import React, { useState, useRef } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useRef, useContext, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import {  AiOutlineEyeInvisible , AiOutlineEye} from 'react-icons/ai';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Form from 'react-bootstrap/Form';
+import { AdminContext } from "../../contexts/AdminContext";
 
 function RegisterArea() {
   const [visiblePassword, setVisiblePassword] = useState(false);
   const name = useRef();
-  const username = useRef();
   const email = useRef();
-  const phone = useRef();
   const password = useRef();
   const [passwordShown, setPasswordShown] = useState(false);
   const [message, setMessage] = useState(null);
 
+  const { activationToken, isAuthenticating, SignUp } = useContext(AdminContext);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticating) {
+      navigate(`/admin/otp/${activationToken}`, { replace: true });
+    }
+  
+  }, [ navigate, isAuthenticating, activationToken]);
+
+
   const handleRegistration = (e) => {
     e.preventDefault();
+    const password = e.target.password.value;
+    const email = e.target.email.value;
+    const name = e.target.name.value;
 
-    fetch("/user/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name: name.current.value,
-        username: username.current.value,
-        email: email.current.value,
-        phone: phone.current.value,
-        password: password.current.value,
-      }),
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.message === "User created") {
-          name.current.value = "";
-          username.current.value = "";
-          email.current.value = "";
-          phone.current.value = "";
-          password.current.value = "";
-          setMessage("Account successfully created");
-        } else if (res.errors) {
-          let errors = Object.values(res.errors);
-          setMessage(errors);
-        }
-      })
-      .catch((err) =>{
-        // console.log('object');
-      });
+    console.log(name, email, password)
+    SignUp(name, email, password);
   };
+
 
   return (
     <div className="register-form">
@@ -65,7 +53,7 @@ function RegisterArea() {
             {message}
           </div>
         ))}
-      <h2>Register</h2>
+      <h2>Sign-Up</h2>
 
       <form onSubmit={handleRegistration}>
         
@@ -79,17 +67,6 @@ function RegisterArea() {
             required />
         </InputGroup>
 
-        
-        <InputGroup className="mb-3 mt-3">
-          <Form.Control aria-label="Amount (to the nearest dollar)" 
-            className='' 
-            placeholder='Username' 
-            type="text" 
-            name="userName" 
-            ref={username}
-            required />
-        </InputGroup>
-
         <InputGroup className="mb-3 mt-3">
           <Form.Control aria-label="Amount (to the nearest dollar)" 
             className='' 
@@ -100,24 +77,6 @@ function RegisterArea() {
             required />
         </InputGroup>
 
-        {/* <div className="form-group">
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Phone"
-            ref={phone}
-            required
-          />
-        </div> */}
-        <InputGroup className="mb-3 mt-3">
-          <Form.Control aria-label="Amount (to the nearest dollar)" 
-            className='' 
-            placeholder='Phone' 
-            type="number" 
-            name="phone" 
-            ref={phone}
-            required />
-        </InputGroup>
 
         <InputGroup className="mb-3 mt-3">
           <Form.Control aria-label="Amount (to the nearest dollar)" 
@@ -157,12 +116,12 @@ function RegisterArea() {
           </div>
         </div>
 
-        <button type="submit">Register now</button>
+        <button type="submit">Signup now</button>
       </form>
 
       <div className="important-text">
         <p>
-          Already have an account? <Link to="/admin/login">Login now!</Link>
+          Already have an account? <Link to="/admin/login">Signin now!</Link>
         </p>
       </div>
     </div>

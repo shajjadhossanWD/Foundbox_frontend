@@ -5,7 +5,7 @@ import PageTitle from "../../Components/Common/PageTitle";
 function Login() {
   return (
     <div className="login-wrapper">
-      <PageTitle title="Login" />
+      <PageTitle title="Sign-In" />
       <section className="login-area ptb-50 admin-login-section">
         <div className="container">
           <LoginArea />

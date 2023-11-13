@@ -14,9 +14,9 @@ const RecentOrders = () => {
   // console.log(allOrder)
 
   const refetchOrder = async () => {
-    await axios.get("https://backend.dslcommerce.com/api/order").then((res) => {
+    await axios.get("http://localhost:8001/api/v1/financial-data").then((res) => {
       if (res.status === 200) {
-        setAllOrder(res.data.reverse().slice(0, recentNum));
+        setAllOrder(res.data);
       } else {
         return <p>There's an error found.</p>;
       }
@@ -31,28 +31,27 @@ const RecentOrders = () => {
 
   return (
     <div className="productBody">
-      <h5 className="text-white-50 text-start pt-5 pb-3">Recent Orders</h5>
+      <h5 className="text-white-50 text-start pt-5 pb-3">Recently Checked</h5>
       <div className="productCard py-2">
         <div className="tableNormal ">
           <Table className="text-white-50 productDataTable ">
             <thead>
               <tr>
-                <th className="">Order Time</th>
-                <th className="">Product Name</th>
-                <th className="">Customer Name</th>
-                {/* <th className=" ">Payment Method</th> */}
-                <th className=" ">Order Amount</th>
-                <th className="">Order Status</th>
+                <th className="">Email</th>
+                <th className="">Year</th>
+                <th className="">Month</th>
+                <th className="">Score</th>
               </tr>
             </thead>
             <tbody>
-              {allOrder?.map((order) => (
-                <RecentOrderTable
-                  key={order._id}
-                  order={order}
-                  refetchOrder={refetchOrder}
-                ></RecentOrderTable>
-              ))}
+            {allOrder?.map((category) => ( <tr key={category._id}>
+                  <td>{category.email}</td>
+                  <td>{category.year}</td>
+                  <td>{category.month}</td>
+                  <td>{category.score}</td>
+
+            </tr>
+            ))}
             </tbody>
           </Table>
         </div>

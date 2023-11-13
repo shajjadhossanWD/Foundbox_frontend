@@ -28,7 +28,7 @@ function Dashboard(props) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (admin?.role !== "admin") {
+    if (admin?.role !== "user") {
       navigate("/");
     }
   }, [admin, navigate]);
@@ -82,7 +82,7 @@ function Dashboard(props) {
           <span className="navIconAdmin">
             <MdCategory style={{ fontSize: "20px" }} />
           </span>
-          CATEGORIES
+          FINANCIAL HEALTH
         </NavLink>
         <br />
 
@@ -195,9 +195,7 @@ function Dashboard(props) {
           <div className="outletContainer">
             <Outlet />
           </div>
-          <div className="copyrightAdmin mt-4 ">
-            <p className="my-2">Copyright © {year} - DS Legends Pte. Ltd.</p>
-          </div>
+         
         </div>
       </Box>
     </Box>

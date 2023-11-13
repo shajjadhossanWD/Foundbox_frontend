@@ -7,6 +7,10 @@
   position: relative;
 }
 
+.admin-login-section{
+  margin-top: 80px;
+}
+
 .upperArrowIcon {
   border-radius: 35px;
   position: fixed;

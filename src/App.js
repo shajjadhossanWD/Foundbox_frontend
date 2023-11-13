@@ -57,18 +57,18 @@ function App() {
 
         {/*************************** Login System ****************************** */}
         <Route path="/admin/login" element={<Login />} />
-        <Route path="/admin/register" element={<Register />} />
-        <Route
+        <Route path="/admin/signup" element={<Register />} />
+        {/* <Route
           path="/admin/login/forgetPassword"
           element={<ForgetPassword />}
         />
         <Route
           path="/admin/login/resetPassword/:token"
           element={<AdminResetPassword />}
-        />
-        /admin
+        /> */}
+        
         <Route
-          path="/admin/otp/:token"
+          path="/admin/otp/:activationToken"
           element={<Otp expiryTimestamp={time} />}
         />
         
