@@ -52,5 +52,5 @@ Welcome to the Financial Health Score App! This React frontend application allow
 ## Live Demo
 
 Visit the [Live Demo](#https://65525b11ed02710ede097817--brilliant-pastelito-80466a.netlify.app) to experience the Financial Health Score App in action!
-
+- https://65525b11ed02710ede097817--brilliant-pastelito-80466a.netlify.app
 Feel free to reach out if you have any questions or feedback. Happy financial health tracking! 🚀
