@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { AdminContext } from '../../contexts/AdminContext';
 
-const AdminRoutes = ({ children }) => {
+const UserRoutes = ({ children }) => {
     const { admin } = useContext(AdminContext);
     let location = useLocation();
     console.log(admin.role)
@@ -14,4 +14,4 @@ const AdminRoutes = ({ children }) => {
     return <Navigate to="/" state={{ from: location }} />;
 };
 
-export default AdminRoutes;
+export default UserRoutes;

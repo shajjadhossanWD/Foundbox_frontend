@@ -14,7 +14,7 @@ export default function AdminProvider({ children }) {
 
     // console.log(localStorage)
     useEffect(() => {
-        axios.get("http://localhost:8001/api/v1/me", {
+        axios.get("https://backend.kvillagebd.com/api/v1/me", {
             headers: {
                 'Authorization': `${localStorage.getItem('setToken')}`
             }
@@ -34,7 +34,7 @@ export default function AdminProvider({ children }) {
 
 
     const SignUp = async (name, email, password) => {
-        await axios.post('http://localhost:8001/api/v1/registration', {
+        await axios.post('https://backend.kvillagebd.com/api/v1/registration', {
             name,
             email,
             password,

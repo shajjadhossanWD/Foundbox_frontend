@@ -24,7 +24,7 @@ const ForgetPassword = () => {
 
     await axios
       .post(
-        "https://backend.dslcommerce.com/api/admin/send-reset-password-link/",
+        "",
         { email }
       )
       .then((res) => {

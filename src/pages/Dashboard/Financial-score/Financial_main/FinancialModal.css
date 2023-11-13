@@ -1,6 +1,21 @@
 /* .css-1wnsr1i {
   width: 400px !important;
 } */
+
+.categoryBtnDiv {
+  float: right;
+  margin-right: 10rem;
+  display: flex;
+}
+
+@media only screen and (max-width: 350px) {
+  .categoryBtnDiv {
+    float: right;
+
+    margin-right: 1rem;
+  }
+}
+
 .modalBg {
   background-color: #303651 !important;
   border-radius: 10px;

@@ -8,17 +8,14 @@ import { Toaster } from "react-hot-toast";
 // Login
 import Login from "./pages/Authentications/Login";
 import Register from "./pages/Authentications/Register";
-import ForgetPassword from "./Components/Auth/ForgetPassword";
 import Otp from "./Components/Auth/Otp";
 
 // Dashboard
 import Dashboard from "./pages/Dashboard/Dashboard";
-import AdminDashboard from "./pages/Dashboard/AdminDashboard/AdminDashboard";
-import AllCategory from "./pages/Dashboard/Category/AllCategory/AllCategory";
-import AddCategory from "./pages/Dashboard/Category/AddCategory/AddCategory";
-import AdminRoutes from "./Components/AdminRoute/AdminRoutes";
-import AdminResetPassword from "./Components/Auth/AdminResetPassword";
 import Loader from "./Components/Shared/Loader";
+import UserRoutes from "./Components/UserRoute/UserRoutes";
+import FinancialData from "./pages/Dashboard/Financial-score/Financial_main/FinancialData";
+import UserDashboard from "./pages/Dashboard/UserDashboard/UserDashboard";
 
 
 
@@ -58,14 +55,6 @@ function App() {
         {/*************************** Login System ****************************** */}
         <Route path="/admin/login" element={<Login />} />
         <Route path="/admin/signup" element={<Register />} />
-        {/* <Route
-          path="/admin/login/forgetPassword"
-          element={<ForgetPassword />}
-        />
-        <Route
-          path="/admin/login/resetPassword/:token"
-          element={<AdminResetPassword />}
-        /> */}
         
         <Route
           path="/admin/otp/:activationToken"
@@ -76,20 +65,17 @@ function App() {
         <Route
           path="/admin"
           element={
-            <AdminRoutes>
+            <UserRoutes>
               <Dashboard />
-            </AdminRoutes>
+            </UserRoutes>
           }
         >
-          <Route index element={<AdminDashboard />} />
-          <Route path="dashboard" element={<AdminDashboard />} />
-          {/*************************** Category  ***************************/}
-          <Route path="all-category" element={<AllCategory />} />
-          <Route
-            path="all-category/:categoryPerPage"
-            element={<AllCategory />}
-          />
-          <Route path="add-category" element={<AddCategory />} />
+          <Route index element={<UserDashboard />} />
+          <Route path="dashboard" element={<UserDashboard />} />
+
+          {/*************************** Financial  ***************************/}
+          <Route path="financial-data" element={<FinancialData />} />
+
         </Route>
         {/*************************** Dashboard End************************** */}
       </Routes>

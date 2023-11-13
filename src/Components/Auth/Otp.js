@@ -44,7 +44,7 @@ const Otp = ({ expiryTimestamp }) => {
     const activation_token = activationToken;
     axios
       .post(
-        `http://localhost:8001/api/v1/activate-user`,
+        `https://backend.kvillagebd.com/api/v1/activate-user`,
         {
           activation_code,
           activation_token

@@ -12,7 +12,6 @@ function LoginArea({ customClass = "" }) {
   const [visiblePassword, setVisiblePassword] = useState(false);
   const [email, setEmail] = useState("");
   const password = useRef();
-  const [alertMsg, setAlertMsg] = useState(null);
   const { setAdmin, setIsAuthenticating, setTokenss } = useContext(AdminContext);
 
   const navigate = useNavigate();
@@ -24,7 +23,7 @@ function LoginArea({ customClass = "" }) {
     const password = e.target.password.value;
     axios
       .post(
-        `http://localhost:8001/api/v1/login`,
+        `https://backend.kvillagebd.com/api/v1/login`,
         {
           email,
           password,
@@ -53,36 +52,10 @@ function LoginArea({ customClass = "" }) {
 
 
 
-
-
-  // const handleLogin = (e) => {
-  //   e.preventDefault();
-  //   const password = e.target.password.value;
-  //   console.log(email, password)
-  //   login(email, password);
-  // };
-
-
   return (
     <div
       className={"login-form "}
     >
-      {/* {alertMsg &&
-        (Array.isArray(alertMsg) ? (
-          <div className="alert alert-danger" role="alert">
-            <ul className="errors" style={{ marginBottom: 0 }}>
-              {alertMsg.map((msg) => (
-                <li key={msg} className="error">
-                  {msg}
-                </li>
-              ))}
-            </ul>
-          </div>
-        ) : (
-          <div className={`alert alert-success`} role="alert">
-            {alertMsg}
-          </div>
-        ))} */}
 
         <h2 className=" ">Sign-In</h2>
 

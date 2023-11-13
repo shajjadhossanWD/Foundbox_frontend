@@ -2,19 +2,11 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { Table } from "react-bootstrap";
-import swal from "sweetalert";
-import RecentOrderTable from "./RecentOrderTable";
-// import { allOrders } from "../CustomerOrders/orderData";
 
 const RecentOrders = () => {
   const [allOrder, setAllOrder] = useState([]);
-  // const [allOrder, setAllOrder] = useState(allOrders);
-  const [recentNum, setRecentNum] = useState(10);
-
-  // console.log(allOrder)
-
   const refetchOrder = async () => {
-    await axios.get("http://localhost:8001/api/v1/financial-data").then((res) => {
+    await axios.get("https://backend.kvillagebd.com/api/v1/financial-data").then((res) => {
       if (res.status === 200) {
         setAllOrder(res.data);
       } else {
@@ -44,7 +36,7 @@ const RecentOrders = () => {
               </tr>
             </thead>
             <tbody>
-            {allOrder?.map((category) => ( <tr key={category._id}>
+            {allOrder?.slice(0, 9).map((category) => ( <tr key={category._id}>
                   <td>{category.email}</td>
                   <td>{category.year}</td>
                   <td>{category.month}</td>

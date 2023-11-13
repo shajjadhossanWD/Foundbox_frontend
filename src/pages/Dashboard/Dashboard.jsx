@@ -77,7 +77,7 @@ function Dashboard(props) {
           className="dashboardMenu"
           style={menuLinkStyles}
           onClick={handleClose}
-          to="all-category"
+          to="financial-data"
         >
           <span className="navIconAdmin">
             <MdCategory style={{ fontSize: "20px" }} />
@@ -132,11 +132,7 @@ function Dashboard(props) {
             className="dashboardTopBar"
           >
             <h4 className="dashboardTitlehidden">Dashboard</h4>
-            {/* <div className="profile">
-              <div className="imgDashDiv" onClick={menuToggle}>
-                <img src={currentAdmin.avatar} alt="" />
-              </div>
-            </div> */}
+          
           </Typography>
         </Toolbar>
       </AppBar>
@@ -152,7 +148,7 @@ function Dashboard(props) {
           open={mobileOpen}
           onClose={handleDrawerToggle}
           ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
+            keepMounted: true, 
           }}
           sx={{
             display: { xs: "block", sm: "none" },

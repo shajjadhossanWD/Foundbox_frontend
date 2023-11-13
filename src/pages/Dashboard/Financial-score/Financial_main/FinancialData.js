@@ -1,16 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Button, Typography, Modal, Box, Tooltip } from "@mui/material";
+import { Button, Modal, Box, Tooltip } from "@mui/material";
 import Table from "react-bootstrap/Table";
 import swal from "sweetalert";
 import axios from "axios";
-import CategoryModal from "./CategoryModal";
-import "./AllCatergory.css";
-import { useNavigate, useParams } from "react-router-dom";
-import Pagination from "../../../../Components/Pagination/Pagination";
-import UpdateCategory from "./UpdateCategory";
-// import { RxCross2 } from 'react-icons/';
-
-import "./CategoryModal.css";
+import "./FinancialModal.css";
 import { AdminContext } from "../../../../contexts/AdminContext";
 
 const style = {
@@ -25,94 +18,44 @@ const style = {
   p: 4,
 };
 
-const AllCategory = () => {
-  const { categoryPerPage } = useParams();
-  console.log(categoryPerPage, 'categoryPerPage');
+
+
+const FinancialData = () => {
   const [open, setOpen] = React.useState(false);
-  const [modal, setModal] = useState(false);
   const [income, setIncome] = useState();
   const [expenses, setexpenses] = useState();
   const [debts, setdebts] = useState();
   const [assets, setassets] = useState();
   const [month, setmonth] = useState("");
   const [year, setyear] = useState("");
-  const [categories, setCategories] = useState([]);
-  const [categoryUpdate, setCategoryUpdate] = useState({
-    show: false,
-    loading: false,
-    value: null,
-  });
-
-  const [editCategoryModal, setEditCategoryModal] = useState(false);
-
-  //****************************** Pagination Start ******************************/
-  const navigate = useNavigate();
-  const [getPage, setPage] = useState(1);
-  const [show, setShow] = useState(10);
-  const [lastPage, setLastPage] = useState(0);
-  const [sliceCategories, setSliceCategories] = useState([]);
-  // console.log(sliceProducts)
+  const [financialData, setFinancialData] = useState([]);
   const { admin } = React.useContext(AdminContext);
 
-  useEffect(() => {
-    const lastPage = Math.ceil(categories?.length / show);
-    setLastPage(lastPage);
-  }, [categories, show]);
 
-
-
-
-
-
-  // useEffect(() => {
-  //   if (categoryPerPage) {
-  //     const page = parseInt(categoryPerPage);
-  //     const getSlicingCategory = categories.slice(
-  //       (page - 1) * show,
-  //       page * show
-  //     );
-  //     setSliceCategories([...getSlicingCategory]);
-  //     setPage(parseInt(page));
-  //   } else {
-  //     const getSlicingProduct = categories.slice(0, show);
-  //     setSliceCategories([...getSlicingProduct]);
-  //   }
-  // }, [categories, show, categoryPerPage]);
-
-  // const pageHandle = (jump) => {
-  //   navigate(`/admin/all-category/${jump}`);
-  //   setPage(parseInt(jump));
-  // };
-
-  //****************************** Pagination End ******************************/
-
-  const getCategory = () => {
-    fetch(`http://localhost:8001/api/v1/financial-data/${admin?.email}`)
+  const getFinancial = () => {
+    fetch(`https://backend.kvillagebd.com/api/v1/financial-data/${admin?.email}`)
       .then((res) => res.json())
       .then((data) => {
-        setCategories(data);
+        setFinancialData(data);
         if (data)
           data.forEach((data) => {
-            // console.log(data._id);
           });
       });
   };
 
-  //get all categories
   useEffect(() => {
-    getCategory();
-    // console.log(data)
+    getFinancial();
   }, []);
 
   const headers = {
     'Authorization': `${localStorage.getItem('setToken')}`
   };
 
-  //post new categories
+  //post new financial data
   const handleSubmit = async (e) => {
     e.preventDefault();
     await axios
-      .post("http://localhost:8001/api/v1/financial-data/", { income, expenses, debts, assets, month, year  }, {headers})
+      .post("https://backend.kvillagebd.com/api/v1/financial-data/", { income, expenses, debts, assets, month, year  }, {headers})
       .then((res) => {
         if (res.status === 200) {
           console.log('submitted dataaaaaa : ' , res.data)
@@ -124,7 +67,7 @@ const AllCategory = () => {
             className: "modal_class_success",
           });
           handleClose();
-          getCategory();
+          getFinancial();
         }
       })
       .catch((error) => {
@@ -138,87 +81,29 @@ const AllCategory = () => {
       });
   };
 
-  //edit categories
-  const handleEdit = async (e, id, name) => {
-    e.preventDefault();
-    console.log(id);
-    console.log(name);
-
-    try {
-      const response = await axios.put(
-        "https://backend.dslcommerce.com/api/category/" + id,
-        { name }
-      );
-
-      console.log(response);
-      setCategoryUpdate({
-        show: false,
-        loading: false,
-        value: null,
-      });
-      if (response.status === 200) {
-        swal({
-          // title: "Success",
-          text: response.data.message,
-          icon: "success",
-          button: "OK!",
-          className: "modal_class_success",
-        });
-      }
-
-      getCategory();
-    } catch (error) {
-      console.log("error");
-      console.log(error);
-    }
-  };
 
   const deleteWarning = (category) => {
     swal({
       title: "Are you sure to delete " + category.name + "?",
-      // text: "Once deleted, you will not be able to recover this imaginary file!",
       icon: "warning",
       buttons: true,
       dangerMode: true,
     }).then((willDelete) => {
       if (willDelete) {
-        handleDelete(category._id);
+        alert('deleted')
       } else {
         swal("Your imaginary file is safe!");
       }
     });
   };
 
-  const handleDelete = async (id) => {
-    console.log("handleDelete");
-    console.log(id);
-    try {
-      const response = await axios.delete(
-        "https://backend.dslcommerce.com/api/category/" + id
-      );
-      if (response.status === 200) {
-        swal({
-          // title: "Success",
-          text: response.data.message,
-          icon: "success",
-          button: "OK!",
-          className: "modal_class_success",
-        });
-      }
-      console.log(response);
-      getCategory();
-    } catch (error) {
-      console.log("error");
-      console.log(error);
-    }
-  };
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
   return (
     <>
       <h5 className="text-white text-start text-uppercase pt-1">FINANCIAL HEALTH</h5>
-
       <div>
         <Modal
           open={open}
@@ -272,7 +157,6 @@ const AllCategory = () => {
                     value={expenses}
                     onChange={(e) => setexpenses(e.target.value)}
                   />
-
 
                 <lable className="mt-2">Debts</lable>
                   <input
@@ -331,8 +215,6 @@ const AllCategory = () => {
                     onChange={(e) => setmonth(e.target.value)}
                   />
 
-
-
                   <div className="help-block with-errors"></div>
                 </div>
               </div>
@@ -377,15 +259,15 @@ const AllCategory = () => {
             </tr>
           </thead>
           <tbody>
-            {categories?.map((category) => (
-                <tr key={category._id}>
-                  <td>{category.email}</td>
-                  <td>{category.month}</td>
-                  <td>{category.score}</td>
+            {financialData?.map((financial) => (
+                <tr key={financial._id}>
+                  <td>{financial.email}</td>
+                  <td>{financial.month}</td>
+                  <td>{financial.score}</td>
 
                   <td>
                     <div className="text-end">
-                      <Tooltip title="Update category." placement="top">
+                      <Tooltip title="Update financial." placement="top">
                         <button
                           type="button"
                           className="editBtn"
@@ -393,11 +275,11 @@ const AllCategory = () => {
                           <i className="fas fa-edit"></i>
                         </button>
                       </Tooltip>
-                      <Tooltip title="Delete category." placement="top">
+                      <Tooltip title="Delete financial." placement="top">
                         <button
                           className="deleteBtn"
                           onClick={() => {
-                            deleteWarning(category);
+                            deleteWarning(financial);
                           }}
                         >
                           <i className="fas fa-trash"></i>
@@ -410,46 +292,9 @@ const AllCategory = () => {
           </tbody>
         </Table>
 
-        {/* Pagination  */}
-        {/* <div className="">
-          {sliceCategories?.length ? (
-            <Pagination
-              lastPage={lastPage}
-              page={getPage}
-              pageHandle={pageHandle}
-            />
-          ) : (
-            <></>
-          )}
-        </div> */}
       </div>
-
-      {/* <UpdateCategory
-        show={editCategoryModal}
-        category={categoryUpdate.value}
-        setEditCategoryModal={setEditCategoryModal}
-        handleSubmit={handleEdit}
-        onHide={() => setEditCategoryModal(false)}
-      ></UpdateCategory> */}
-
-
-
-      {categoryUpdate.show && (
-        <CategoryModal
-          open={categoryUpdate.show}
-          category={categoryUpdate.value}
-          handleClose={() =>
-            setCategoryUpdate({
-              show: false,
-              loading: false,
-              value: null,
-            })
-          }
-          handleSubmit={handleEdit}
-        ></CategoryModal>
-      )}
     </>
   );
 };
 
-export default AllCategory;
+export default FinancialData;
